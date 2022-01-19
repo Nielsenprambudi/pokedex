@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css';
 import Layout from './layout/layout';
 import NavbarLayout from './layout/navbar';
 import { Search, PeopleExpand } from '@rsuite/icons/lib/icons';
-import {Grid, Row, Col, IconButton, Badge,
+import {Grid, Row, Col, IconButton, Badge, Modal,
   Button, Container, Divider, Loader} from 'rsuite';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
@@ -75,9 +75,27 @@ const {loading, error, data} = useQuery(gqlQuery, {
     offset: 1
   }
 });
+const [open, setOpen] = useState(false);
+const [pokeName, setPokeName] = useState("");
+const [pokeImg, setPokeImg] = useState("");
+const [catchStatus, setCatchStatus] = useState(null);
 
 const getMorePokemon = (length) => {
   setLimitData(length + 16);
+};
+
+const catchPoke = (po) => {
+  setPokeName(po?.name);
+  setPokeImg(po?.image);
+  setOpen(true);
+  setCatchStatus(Math.random() < 0.5);
+}
+
+const onCloseModal = () => {
+  setPokeName("");
+  setPokeImg("");
+  setOpen(false);
+  setCatchStatus(null);
 }
 
 
@@ -90,7 +108,26 @@ const getMorePokemon = (length) => {
   return (
     <Container>
 
-     
+        <Modal open={open} onClose={() => onCloseModal()}>
+          <Modal.Header>
+            <Modal.Title>
+              {
+                catchStatus === false ?
+                `${pokeName} escaped` :
+                `${pokeName} is your pokemon`
+              }
+            </Modal.Title>
+            
+          </Modal.Header>
+          <Modal.Body>
+            {
+              pokeImg != "" &&
+              // <Image loader={pokeImg} src={pokeImg} width={200} height={200}/>
+              <img src={pokeImg} width={200} height={200}/>
+            }
+          </Modal.Body>
+
+        </Modal>
         <div align="center">
           <h3 css={morePokemonHeader}>
             {
@@ -124,7 +161,7 @@ const getMorePokemon = (length) => {
                           <br></br>
                             <Row>
                               <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
-                                <IconButton icon={<PeopleExpand/>} color="red" appearance="primary">Catch</IconButton>
+                                <IconButton onClick={() => catchPoke(po)} icon={<PeopleExpand/>} color="red" appearance="primary">Catch</IconButton>
                               </Col>
                               <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
                                 <IconButton icon={<Search/>} color="green" appearance="primary">Detail</IconButton>
