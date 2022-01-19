@@ -3,15 +3,11 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import styles from '../styles/Home.module.css';
-/** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
+import Layout from './layout/layout';
+import Navbar from './layout/navbar';
+import {Grid, Row, Col, Button} from 'rsuite';
 
-const centeringImage = css`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 
-`
 
 export default function Home() {
   const gqlQuery = gql`
@@ -34,12 +30,10 @@ const gqlVariables = {
   limit: 2,
   offset: 1,
 };
-const [test, setTest] = useState([]);
 const {loading, error, data} = useQuery(gqlQuery, {
   variables: gqlVariables
 });
-// const {loading, error, data} = useQuery(EXCHANGE_RATES);
-console.log("check data", data, loading)
+const [pokeData, setPokeData] = useState(data?.pokemons?.results);
 
   // useEffect(() => {
   //   getPokemon();
@@ -51,23 +45,34 @@ console.log("check data", data, loading)
 
   return (
     <div align="center">
-
-      <img css={centeringImage}  src="https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png" width="100%" alt="pokemon logo text png" />
-
-    
-
-      <br></br>
-      <iframe 
-        src='https://gfycat.com/ifr/AppropriateDismalEsok?controls=0&showinfo=0' 
-        frameborder='0' 
-        scrolling='no' 
-        allowfullscreen 
-        width='640' 
-        height='229'
-      >
-      </iframe>
-
+      <Grid>
+        <Row>  
+          {
+            pokeData.length > 0 &&
+            pokeData.map((po, i) => {
+              return (
+                <Col key={i} xs={24} sm={24} md={8} lg={8}>
+                  <img src={po?.image} alt={po?.name} layout="responsive"/>
+                  <br></br>
+                  <h3>{po?.name}</h3>
+                  <br></br>
+                  <Button color="yellow" appearance="subtle">Pokemon Detail</Button>
+                </Col>
+              )
+            })
+          }
+        </Row>
+      </Grid>
     
     </div>
+  )
+}
+
+Home.getLayout = function getLayout(page) {
+  return (
+   <Layout>
+     <Navbar/>
+      {page}
+   </Layout>
   )
 }

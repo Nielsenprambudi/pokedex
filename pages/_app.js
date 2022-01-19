@@ -1,4 +1,5 @@
 
+import 'rsuite/dist/rsuite.min.css';
 import '../styles/globals.css';
 import { Fragment } from 'react';
 import Head from 'next/head';
@@ -13,15 +14,10 @@ const client = new ApolloClient({
 });
 
 const MyApp = ({ Component, pageProps }) => {
-  return (
+  const getLayout = Component.getLayout || ((page) => page)
+
+  return getLayout(
     <Fragment>
-      <Head>
-        <title>Pokemon, Gotta Catch'em All</title>
-        <meta
-          name="description"
-          content="Pokedex for data to hunt the pokemon"
-        />
-      </Head>
       <ApolloProvider client={client}>
         <Provider store={store}>
           <Component {...pageProps} />
@@ -31,4 +27,5 @@ const MyApp = ({ Component, pageProps }) => {
   )
 }
 
-export default MyApp
+
+export default MyApp;
