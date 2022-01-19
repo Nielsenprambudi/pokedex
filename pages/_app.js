@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery,gql } from '@apollo/client';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import { CustomProvider } from 'rsuite';
 // import {jsx} from '@emotion/react';
 
 const client = new ApolloClient({
@@ -20,7 +21,9 @@ const MyApp = ({ Component, pageProps }) => {
     <Fragment>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <Component {...pageProps} />
+          <CustomProvider theme='dark'>
+            <Component {...pageProps} />
+          </CustomProvider>
         </Provider>
       </ApolloProvider>
     </Fragment>

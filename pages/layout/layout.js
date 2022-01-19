@@ -19,7 +19,7 @@ export default function Layout({children}) {
                 content="Pokedex for data to hunt the pokemon"
                 />
             </Head>
-            <img css={centeringImage}  src="https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png" width="25%" alt="pokemon logo text png" />
+            {/* <img css={centeringImage}  src="https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png" width="25%" alt="pokemon logo text png" /> */}
             <main>{children}</main>
         </>
     )

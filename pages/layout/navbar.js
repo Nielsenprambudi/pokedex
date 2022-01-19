@@ -1,42 +1,53 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Sidenav, Nav, Dropdown } from 'rsuite';
+import { Navbar, Nav, Header } from 'rsuite';
+import { AppSelect, Storage } from '@rsuite/icons/lib/icons';
 import { useState } from 'react';
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react';
 
 const sidebarStyle = css`
-    max-width: 150px;
-    margin-top: 10%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
 `
 
-const Navbar = () => {
+const NavbarLayout = () => {
     const router = useRouter();
     const [expanded, setExpanded] = useState(false);
     const [activeKey, setActiveKey] = useState('list');
 
     return (
-        <div css={sidebarStyle}>
+        // <Container >
+        <Header>
+            <Navbar>
+                <Navbar.Brand>
+                    <img 
+                        src="https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png" 
+                        width="80" 
+                        alt="pokedex"
+                        onClick={() => router.push("/")}
+                    />
+                </Navbar.Brand>
+                <Nav
+                    activeKey={activeKey}
+                    onSelect={setActiveKey}
+                >
+                    <Nav.Item onClick={() => router.push("/")} eventKey="list">
+                       <AppSelect size="5em"/> POKELIST
+                    </Nav.Item>
+                    <Nav.Item onClick={() => router.push("/mylist")} eventKey="mylist">
+                        <Storage size="5em"/> MY POKEMON
+                    </Nav.Item>
+                </Nav>
+            </Navbar>
 
-            <Sidenav
-                expanded={true}
-                activeKey={activeKey}
-                onSelect={setActiveKey}
-            >
-                <Sidenav.Body>
-                    <Nav>
-                        <Nav.Item eventKey="list">
-                            Pokelist
-                        </Nav.Item>
-                        <Nav.Item eventKey="mylist">
-                            My Pokemon
-                        </Nav.Item>
-                    </Nav>
-                </Sidenav.Body>
-            </Sidenav>
-        </div>
+        </Header>
+            
+            
+        // </Container>
     )
 }
 
-export default Navbar;
+export default NavbarLayout;

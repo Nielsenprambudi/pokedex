@@ -13,6 +13,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@reduxjs/toolkit": "^1.7.1",
+    "@rsuite/icons": "^1.0.2",
     "axios": "^0.25.0",
     "graphql": "^16.2.0",
     "next": "12.0.8",
