@@ -1,8 +1,8 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useQuery, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import Layout from './layout/layout';
 import NavbarLayout from './layout/navbar';
@@ -71,35 +71,47 @@ const getImage = css`
   }
 `
 
-export default function Home() {
+export default function Detail() {
 const gqlQuery = gql`
-  query pokemons($limit: Int, $offset: Int) {
-    pokemons(limit: $limit, offset: $offset) {
-      count
-      next
-      previous
-      status
-      message
-      results {
-        url
-        name
-        image
+  query pokemon($name: String!) {
+    pokemon(name: $name) {
+      id
+      name
+      abilities {
+        ability {
+          name
+        }
       }
+      moves {
+        move {
+          name
+        }
+      }
+      types {
+        type {
+          name
+        }
+      }
+      message
+      status
     }
   }`;
-
 const router = useRouter();
-const [limitData, setLimitData ] = useState(16);
+const [name, setName ] = useState(router?.query?.name);
 const {loading, error, data} = useQuery(gqlQuery, {
   variables: {
-    limit: limitData,
-    offset: 1
+    name: name
   }
 });
 const [open, setOpen] = useState(false);
 const [pokeName, setPokeName] = useState("");
 const [pokeImg, setPokeImg] = useState("");
 const [catchStatus, setCatchStatus] = useState(null);
+console.log("get data detail", data, router?.query?.name);
+
+useEffect(() => {
+  setName(router?.query?.name);
+}, [router?.query?.name]);
 
 const getMorePokemon = (length) => {
   setLimitData(length + 16);
@@ -151,59 +163,9 @@ const onCloseModal = () => {
 
         </Modal>
         <div align="center">
-          <h3 css={morePokemonHeader}>
-            {
-              loading ?
-              `Waiting Calculating Pokemons...` :
-              `Exploring ${data?.pokemons?.results.length} from ${data?.pokemons?.count} Pokemons`
-            }
-          </h3>
-          <Divider></Divider>
+          
 
-          {
-            loading ?
-            <Loader center content="Getting Pokemon..." vertical size="lg"/> :
-            <Grid>
-              <Row>  
-                {
-                  data?.pokemons?.results.length > 0 &&
-                  data?.pokemons?.results.map((po, i) => {
-                    const pokeload = ({src}) => {
-                      return `${po?.image}`;
-                    };
-                    return (
-                      <Col key={i} xs={24} sm={12} md={8} lg={6}>
-
-                        <div css={pokeCard}>
-                          <Badge content={`Have 1`}>
-                            <Image loader={pokeload} src={po?.image} alt={po?.name} width={200} height={200}/>
-                          </Badge>
-                          <br></br>
-                          <h5>{po?.name}</h5>
-                          <br></br>
-                            <Row>
-                              <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
-                                <IconButton onClick={() => catchPoke(po)} icon={<PeopleExpand/>} color="red" appearance="primary">Catch</IconButton>
-                              </Col>
-                              <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
-                                <IconButton onClick={() => router.push(`/detail?name=${po?.name}`)} icon={<Search/>} color="green" appearance="primary">Detail</IconButton>
-                              </Col>
-                            </Row>
-                        </div>
-                      </Col>
-                    )
-                  })
-                }
-              </Row>
-                {
-                  data?.pokemons?.results.length < data?.pokemons.count &&
-                  <Button color="blue" appearance='primary' onClick={() => getMorePokemon(data?.pokemons?.results.length)}>
-                    Load More Pokemon..
-                  </Button>
-                }
-              
-            </Grid>
-          }
+          <h1>detail pokemon</h1>
         
         </div>
 
@@ -211,7 +173,7 @@ const onCloseModal = () => {
   )
 }
 
-Home.getLayout = function getLayout(page) {
+Detail.getLayout = function getLayout(page) {
   return (
    <Layout>
      <NavbarLayout/>
