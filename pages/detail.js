@@ -131,13 +131,6 @@ const onCloseModal = () => {
   setCatchStatus(null);
 };
 
-
-
-
-
-
-  
-
   
 
   return (
@@ -168,6 +161,23 @@ const onCloseModal = () => {
           
 
           <h3 css={morePokemonHeader}>{data?.pokemon?.name}</h3>
+          <Divider>
+            <h3>Types</h3>
+          </Divider>
+          {
+            data?.pokemon?.types.length > 0  &&
+            <TagGroup>
+                {
+                  data?.pokemon?.types.map((ty, y) => {
+                    return (
+                      <Tag size="lg" key={y} color="green">
+                        {ty?.type?.name}
+                      </Tag>
+                    )
+                  })
+                }
+            </TagGroup>
+          }
 
           <Divider>
             <h3>Abilities</h3>
