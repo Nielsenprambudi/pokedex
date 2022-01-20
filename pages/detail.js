@@ -7,8 +7,8 @@ import styles from '../styles/Home.module.css';
 import Layout from './layout/layout';
 import NavbarLayout from './layout/navbar';
 import { Search, PeopleExpand, ArrowUp } from '@rsuite/icons/lib/icons';
-import {Grid, Row, Col, IconButton, Badge, Modal,
-  Button, Container, Divider, Loader} from 'rsuite';
+import {Grid, Row, Col, IconButton, Badge, Modal, List,
+  Button, Container, Divider, Loader, TagGroup, Tag} from 'rsuite';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
 
@@ -107,7 +107,7 @@ const [open, setOpen] = useState(false);
 const [pokeName, setPokeName] = useState("");
 const [pokeImg, setPokeImg] = useState("");
 const [catchStatus, setCatchStatus] = useState(null);
-console.log("get data detail", data, router?.query?.name);
+console.log("pokemon name", data)
 
 useEffect(() => {
   setName(router?.query?.name);
@@ -122,14 +122,16 @@ const catchPoke = (po) => {
   setPokeImg(po?.image);
   setOpen(true);
   setCatchStatus(Math.random() < 0.5);
-}
+};
 
 const onCloseModal = () => {
   setPokeName("");
   setPokeImg("");
   setOpen(false);
   setCatchStatus(null);
-}
+};
+
+
 
 
 
@@ -165,7 +167,44 @@ const onCloseModal = () => {
         <div align="center">
           
 
-          <h1>detail pokemon</h1>
+          <h3 css={morePokemonHeader}>{data?.pokemon?.name}</h3>
+
+          <Divider>
+            <h3>Abilities</h3>
+          </Divider>
+
+          <List>
+            {
+              data?.pokemon?.abilities.length > 0 &&
+              data?.pokemon?.abilities.map((ab, i) => {
+                return (
+                  <List.Item>
+                    {ab?.ability?.name}
+                  </List.Item>
+                )
+              })
+            }
+          </List>
+
+          <Divider>
+            <h3>Moves</h3>
+          </Divider>
+
+          {
+            data?.pokemon?.moves.length > 0 &&
+            <TagGroup>
+              {
+                data?.pokemon?.moves.map((mo, i) => {
+                  return (
+                  <Tag size="lg">
+                    {mo?.move?.name}
+                  </Tag>
+                  )
+                })  
+              }
+            </TagGroup>
+          }
+
         
         </div>
 
