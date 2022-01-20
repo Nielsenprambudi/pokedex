@@ -11,6 +11,7 @@ import NavbarLayout from './layout/navbar';
 import { Search, PeopleExpand, ArrowUp } from '@rsuite/icons/lib/icons';
 import {Grid, Row, Col, IconButton, Badge, Modal,
   Button, Container, Divider, Loader} from 'rsuite';
+import { removePokemon } from './store/slice/mylist';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
 
@@ -73,47 +74,19 @@ const getImage = css`
   }
 `
 
-export default function Home() {
-const gqlQuery = gql`
-  query pokemons($limit: Int, $offset: Int) {
-    pokemons(limit: $limit, offset: $offset) {
-      count
-      next
-      previous
-      status
-      message
-      results {
-        url
-        name
-        image
-      }
-    }
-  }`;
+export default function Myownedlist() {
+
 
 const router = useRouter();
 const dispatch = useDispatch();
-const mylist = useSelector((state) => state.mylist);
-const [limitData, setLimitData ] = useState(16);
-const {loading, error, data} = useQuery(gqlQuery, {
-  variables: {
-    limit: limitData,
-    offset: 1
-  }
-});
 const [open, setOpen] = useState(false);
+const myPoke = useSelector((state) => state.mylist);
 const [pokeName, setPokeName] = useState("");
 const [pokeImg, setPokeImg] = useState("");
 const [catchStatus, setCatchStatus] = useState(null);
 
-const getMorePokemon = (length) => {
-  setLimitData(length + 16);
-};
-
-const catchPoke = (po) => {
-  setPokeName(po?.name);
-  setPokeImg(po?.image);
-  setOpen(true);
-  setCatchStatus(Math.random() < 0.5);
+const releasePoke = (i) => {
+  dispatch(removePokemon(i));
 }
 
 const onCloseModal = () => {
@@ -162,26 +135,16 @@ const getIntoDetail = (pdata) => {
         </Modal>
         <div align="center">
           <h3 css={morePokemonHeader}>
-            {
-              loading ?
-              `Waiting Calculating Pokemons...` :
-              `Exploring ${data?.pokemons?.results.length} from ${data?.pokemons?.count} Pokemons`
-            }
+              Exploring my {myPoke?.length} pokemons
           </h3>
           <Divider></Divider>
-            <h4>
-              I have {mylist.length} pokemons right now!
-            </h4>
-          <Divider></Divider>
 
-          {
-            loading ?
-            <Loader center content="Getting Pokemon..." vertical size="lg"/> :
+         
             <Grid>
               <Row>  
                 {
-                  data?.pokemons?.results.length > 0 &&
-                  data?.pokemons?.results.map((po, i) => {
+                  myPoke.length > 0 &&
+                  myPoke?.map((po, i) => {
                     const pokeload = ({src}) => {
                       return `${po?.image}`;
                     };
@@ -191,11 +154,13 @@ const getIntoDetail = (pdata) => {
                         <div css={pokeCard}>
                           <Image loader={pokeload} src={po?.image} alt={po?.name} width={200} height={200}/>
                           <br></br>
-                          <h5>{po?.name}</h5>
+                          <h5>{po?.nickname}</h5>
+                          <br></br>
+                          <p>{po?.name}</p>
                           <br></br>
                             <Row>
                               <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
-                                <IconButton onClick={() => catchPoke(po)} icon={<PeopleExpand/>} color="red" appearance="primary">Catch</IconButton>
+                                <IconButton onClick={() => releasePoke(i)} icon={<PeopleExpand/>} color="red" appearance="primary">Remove</IconButton>
                               </Col>
                               <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
                                 <IconButton onClick={() => getIntoDetail(po)} icon={<Search/>} color="green" appearance="primary">Detail</IconButton>
@@ -207,15 +172,8 @@ const getIntoDetail = (pdata) => {
                   })
                 }
               </Row>
-                {
-                  data?.pokemons?.results.length < data?.pokemons.count &&
-                  <Button color="blue" appearance='primary' onClick={() => getMorePokemon(data?.pokemons?.results.length)}>
-                    Load More Pokemon..
-                  </Button>
-                }
               
             </Grid>
-          }
         
         </div>
 
@@ -223,7 +181,7 @@ const getIntoDetail = (pdata) => {
   )
 }
 
-Home.getLayout = function getLayout(page) {
+Myownedlist.getLayout = function getLayout(page) {
   return (
    <Layout>
      <NavbarLayout/>

@@ -5,8 +5,9 @@ import { Fragment } from 'react';
 import Head from 'next/head';
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery,gql } from '@apollo/client';
 import { Provider } from 'react-redux';
-import store from './store/store';
+import {persistor , store} from './store/store';
 import { CustomProvider } from 'rsuite';
+import { PersistGate } from 'redux-persist/integration/react';
 // import {jsx} from '@emotion/react';
 
 const client = new ApolloClient({
@@ -22,7 +23,9 @@ const MyApp = ({ Component, pageProps }) => {
       <ApolloProvider client={client}>
         <Provider store={store}>
           <CustomProvider theme='dark'>
-            <Component {...pageProps} />
+            <PersistGate loading={null} persistor={persistor}>
+              <Component {...pageProps} />
+            </PersistGate>
           </CustomProvider>
         </Provider>
       </ApolloProvider>

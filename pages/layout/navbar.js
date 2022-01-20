@@ -37,7 +37,7 @@ const NavbarLayout = () => {
                     <Nav.Item onClick={() => router.push("/")} eventKey="list">
                        <AppSelect size="5em"/> POKELIST
                     </Nav.Item>
-                    <Nav.Item onClick={() => router.push("/mylist")} eventKey="mylist">
+                    <Nav.Item onClick={() => router.push("/myownedlist")} eventKey="mylist">
                         <Storage size="5em"/> MY POKEMON
                     </Nav.Item>
                 </Nav>
