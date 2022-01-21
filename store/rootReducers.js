@@ -1,3 +1,4 @@
+import React from 'react';
 import { combineReducers } from "@reduxjs/toolkit";
 import detailReducer from './slice/detail';
 import mylistReducer from './slice/mylist';

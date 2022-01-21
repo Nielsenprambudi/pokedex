@@ -12,7 +12,7 @@ import {IconButton, Modal, Input, Notification, toaster,
 import message from './component/notification';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
-import { savePokemon } from './store/slice/mylist';
+import { savePokemon } from './../store/slice/mylist';
 
 const morePokemonHeader = css`
   font-style: italic;
@@ -202,7 +202,7 @@ const submitPokemon = () => {
           <Modal.Body css={centerModal}>
             {
               detailPoke?.image != "" &&
-              <Image loader={pokeload} src={detailPoke?.image} width={200} height={200}/>
+              <Image loader={pokeload} src={detailPoke?.image} width={200} height={200} alt={detailPoke?.name}/>
             }
             <br></br>
             {

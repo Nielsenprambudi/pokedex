@@ -1,17 +1,14 @@
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {seeDetail} from './store/slice/detail';
+import {seeDetail} from './../store/slice/detail';
 import { useRouter } from 'next/router';
-import { useQuery, gql } from '@apollo/client';
-import styles from '../styles/Home.module.css';
 import Layout from './layout/layout';
 import NavbarLayout from './layout/navbar';
-import { Search, PeopleExpand, ArrowUp } from '@rsuite/icons/lib/icons';
-import {Grid, Row, Col, IconButton, Badge, Modal,
-  Button, Container, Divider, Loader} from 'rsuite';
-import { removePokemon } from './store/slice/mylist';
+import { Search, PeopleExpand } from '@rsuite/icons/lib/icons';
+import {Grid, Row, Col, IconButton,
+  Container, Divider} from 'rsuite';
+import { removePokemon } from './../store/slice/mylist';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
 
@@ -79,22 +76,11 @@ export default function Myownedlist() {
 
 const router = useRouter();
 const dispatch = useDispatch();
-const [open, setOpen] = useState(false);
 const myPoke = useSelector((state) => state.mylist);
-const [pokeName, setPokeName] = useState("");
-const [pokeImg, setPokeImg] = useState("");
-const [catchStatus, setCatchStatus] = useState(null);
 
 const releasePoke = (i) => {
   dispatch(removePokemon(i));
 }
-
-const onCloseModal = () => {
-  setPokeName("");
-  setPokeImg("");
-  setOpen(false);
-  setCatchStatus(null);
-};
 
 
 const getIntoDetail = (pdata) => {
@@ -112,27 +98,6 @@ const getIntoDetail = (pdata) => {
   return (
     <Container>
 
-        <Modal full size="xs" open={open} onClose={() => onCloseModal()}>
-          <Modal.Header>
-            <Modal.Title css={centerModal}>
-              {
-                catchStatus === false ?
-                `${pokeName} escaped!` :
-                catchStatus == true ?
-                `catched ${pokeName}!` : null
-              }
-            </Modal.Title>
-            
-          </Modal.Header>
-          <Modal.Body css={centerModal}>
-            {
-              pokeImg != "" &&
-              // <Image loader={pokeImg} src={pokeImg} width={200} height={200}/>
-              <img src={pokeImg} css={getImage}/>
-            }
-          </Modal.Body>
-
-        </Modal>
         <div align="center">
           {
             myPoke?.length > 0 ?
@@ -140,7 +105,7 @@ const getIntoDetail = (pdata) => {
                 Exploring my {myPoke?.length} pokemons
             </h3> :
             <h3 css={morePokemonHeader}>
-                I don't have any pokemons right now!
+               {"I don't have any pokemons right now!"}
             </h3>
 
           }

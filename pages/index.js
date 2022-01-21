@@ -2,10 +2,9 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {seeDetail} from './store/slice/detail';
+import {seeDetail} from './../store/slice/detail';
 import { useRouter } from 'next/router';
 import { useQuery, gql } from '@apollo/client';
-import styles from '../styles/Home.module.css';
 import Layout from './layout/layout';
 import NavbarLayout from './layout/navbar';
 import { Search, PeopleExpand, ArrowUp } from '@rsuite/icons/lib/icons';
@@ -53,27 +52,15 @@ const pokeCard = css`
   }
 `
 
-const centerModal = css`
-  text-align: center;
-  align: center;
-  overflow: hidden;
-  word-wrap: break-word;
+const hadPadding = css`
+  paddingBottom: 10px;
 `
 
-const getImage = css`
-  width: 10%;
-  @media (max-width: 1024px) {
-    width: 20%;
-  };
-  @media (max-width: 768px) {
-    width: 30%;
-  };
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`
+
 
 export default function Home() {
+
+
 const gqlQuery = gql`
   query pokemons($limit: Int, $offset: Int) {
     pokemons(limit: $limit, offset: $offset) {
@@ -93,35 +80,14 @@ const gqlQuery = gql`
 const router = useRouter();
 const dispatch = useDispatch();
 const mylist = useSelector((state) => state.mylist);
-const [limitData, setLimitData ] = useState(16);
-const {loading, error, data} = useQuery(gqlQuery, {
+const {loading, error, data, fetchMore, networkStatus} = useQuery(gqlQuery, {
   variables: {
-    limit: limitData,
-    offset: 1
-  }
+    limit: 10,
+    offset: 0
+  },
+  notifyOnNetworkStatusChange: true,
 });
-const [open, setOpen] = useState(false);
-const [pokeName, setPokeName] = useState("");
-const [pokeImg, setPokeImg] = useState("");
-const [catchStatus, setCatchStatus] = useState(null);
-
-const getMorePokemon = (length) => {
-  setLimitData(length + 16);
-};
-
-const catchPoke = (po) => {
-  setPokeName(po?.name);
-  setPokeImg(po?.image);
-  setOpen(true);
-  setCatchStatus(Math.random() < 0.5);
-}
-
-const onCloseModal = () => {
-  setPokeName("");
-  setPokeImg("");
-  setOpen(false);
-  setCatchStatus(null);
-};
+const getMore = networkStatus === 3;
 
 
 const getIntoDetail = (pdata) => {
@@ -129,37 +95,10 @@ const getIntoDetail = (pdata) => {
   router.push(`/detail?name=${pdata?.name}`);
 }
 
-
-
-
-  
-
   
 
   return (
     <Container>
-
-        <Modal full size="xs" open={open} onClose={() => onCloseModal()}>
-          <Modal.Header>
-            <Modal.Title css={centerModal}>
-              {
-                catchStatus === false ?
-                `${pokeName} escaped!` :
-                catchStatus == true ?
-                `catched ${pokeName}!` : null
-              }
-            </Modal.Title>
-            
-          </Modal.Header>
-          <Modal.Body css={centerModal}>
-            {
-              pokeImg != "" &&
-              // <Image loader={pokeImg} src={pokeImg} width={200} height={200}/>
-              <img src={pokeImg} css={getImage}/>
-            }
-          </Modal.Body>
-
-        </Modal>
         <div align="center">
           <h3 css={morePokemonHeader}>
             {
@@ -175,16 +114,14 @@ const getIntoDetail = (pdata) => {
               I have {mylist.length} pokemons right now!
             </h4> :
             <h4>
-              I don't have any pokemon right now!
+              {"I don't have any pokemon right now!"}
             </h4>
 
           }
           <Divider></Divider>
 
-          {
-            loading ?
-            <Loader center content="Getting Pokemon..." vertical size="lg"/> :
-            <Grid>
+          
+            <Grid css={hadPadding}>
               <Row>  
                 {
                   data?.pokemons?.results.length > 0 &&
@@ -211,15 +148,18 @@ const getIntoDetail = (pdata) => {
                   })
                 }
               </Row>
-                {
-                  data?.pokemons?.results.length < data?.pokemons.count &&
-                  <Button color="blue" appearance='primary' onClick={() => getMorePokemon(data?.pokemons?.results.length)}>
-                    Load More Pokemon..
-                  </Button>
-                }
+              {
+                data?.pokemons?.results.length < data?.pokemons.count &&
+                <Button loading={getMore} color="blue" appearance='primary' onClick={() => fetchMore({
+                  variables: {
+                    limit: data?.pokemons?.results.length + 10
+                  }
+                })}>
+                  Load More Pokemon..
+                </Button>
+              }
               
             </Grid>
-          }
         
         </div>
 

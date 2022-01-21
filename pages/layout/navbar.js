@@ -17,15 +17,20 @@ const NavbarLayout = () => {
     const router = useRouter();
     const [expanded, setExpanded] = useState(false);
     const [activeKey, setActiveKey] = useState('list');
+    const pokelogo = ({src}) => {
+        return `https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png`
+    }
 
     return (
         // <Container >
         <Header>
             <Navbar>
                 <Navbar.Brand>
-                    <img 
+                    <Image
+                        loader={pokelogo} 
                         src="https://www.freepnglogos.com/uploads/pokemon-logo-text-png-7.png" 
-                        width="80" 
+                        width={100}
+                        height={30}
                         alt="pokedex"
                         onClick={() => router.push("/")}
                     />
