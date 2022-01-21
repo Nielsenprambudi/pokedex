@@ -9,6 +9,7 @@ import NavbarLayout from './layout/navbar';
 import { PeopleExpand } from '@rsuite/icons/lib/icons';
 import {IconButton, Modal, Input, Notification, toaster,
   Button, Container, Divider, Loader, TagGroup, Tag} from 'rsuite';
+import message from './component/notification';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
 import { savePokemon } from './store/slice/mylist';
@@ -163,12 +164,6 @@ const onShowLessTypes = () => {
 const pokeload = ({src}) => {
   return `${detailPoke?.image}`;
 };
-
-const message = (type, msg) => (
-    <Notification type={type} header={type} closable>
-      {msg}
-    </Notification>
-);
 
 
 const submitPokemon = () => {

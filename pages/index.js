@@ -169,9 +169,16 @@ const getIntoDetail = (pdata) => {
             }
           </h3>
           <Divider></Divider>
+          {
+            mylist.length > 0 ?
             <h4>
               I have {mylist.length} pokemons right now!
+            </h4> :
+            <h4>
+              I don't have any pokemon right now!
             </h4>
+
+          }
           <Divider></Divider>
 
           {
@@ -194,10 +201,7 @@ const getIntoDetail = (pdata) => {
                           <h5>{po?.name}</h5>
                           <br></br>
                             <Row>
-                              <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
-                                <IconButton onClick={() => catchPoke(po)} icon={<PeopleExpand/>} color="red" appearance="primary">Catch</IconButton>
-                              </Col>
-                              <Col style={{marginTop: 5}} xs={24} sm={24} md={12} lg={12}>
+                              <Col xs={24} sm={24} lg={24} md={24} >
                                 <IconButton onClick={() => getIntoDetail(po)} icon={<Search/>} color="green" appearance="primary">Detail</IconButton>
                               </Col>
                             </Row>

@@ -134,9 +134,16 @@ const getIntoDetail = (pdata) => {
 
         </Modal>
         <div align="center">
-          <h3 css={morePokemonHeader}>
-              Exploring my {myPoke?.length} pokemons
-          </h3>
+          {
+            myPoke?.length > 0 ?
+            <h3 css={morePokemonHeader}>
+                Exploring my {myPoke?.length} pokemons
+            </h3> :
+            <h3 css={morePokemonHeader}>
+                I don't have any pokemons right now!
+            </h3>
+
+          }
           <Divider></Divider>
 
          
