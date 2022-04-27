@@ -1,6 +1,6 @@
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {seeDetail} from './../store/slice/detail';
 import { useRouter } from 'next/router';
@@ -10,8 +10,10 @@ import NavbarLayout from './layout/navbar';
 import { Search, PeopleExpand, ArrowUp } from '@rsuite/icons/lib/icons';
 import {Grid, Row, Col, IconButton, Badge, Modal,
   Button, Container, Divider, Loader} from 'rsuite';
+import InfiniteScroller from 'react-infinite-scroller';
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react';
+
 
 const morePokemonHeader = css`
   font-style: italic;
@@ -76,9 +78,9 @@ const gqlQuery = gql`
       }
     }
   }`;
-
 const router = useRouter();
 const dispatch = useDispatch();
+const [isFetch, setIsFetch] = useState(true);
 const mylist = useSelector((state) => state.mylist);
 const {loading, error, data, fetchMore, networkStatus} = useQuery(gqlQuery, {
   variables: {
@@ -90,16 +92,25 @@ const {loading, error, data, fetchMore, networkStatus} = useQuery(gqlQuery, {
 const getMore = networkStatus === 3;
 
 
+
 const getIntoDetail = (pdata) => {
   dispatch(seeDetail(pdata));
   router.push(`/detail?name=${pdata?.name}`);
 }
 
+const fetchPokemon = () => {
+  fetchMore({
+    variables: {
+      limit: data?.pokemons?.results.length + 10
+    }
+  })
+}
+
   
 
   return (
-    <Container>
-        <div align="center">
+    <Container >
+        <div  align="center">
           <h3 css={morePokemonHeader}>
             {
               loading ?
@@ -119,9 +130,44 @@ const getIntoDetail = (pdata) => {
 
           }
           <Divider></Divider>
+            <InfiniteScroller
+              pageStart={0}
+              loadMore={fetchPokemon}
+              hasMore={data?.pokemons?.results.length < data?.pokemons.count}
+              loader={<div className="loader" key={0}>Loading ...</div>}
+            >
+              <Grid id="pokecontain" css={hadPadding}>
+                <Row>  
+                  {
+                    data?.pokemons?.results.length > 0 &&
+                    data?.pokemons?.results.map((po, i) => {
+                      const pokeload = ({src}) => {
+                        return `${po?.image}`;
+                      };
+                      return (
+                        <Col key={i} xs={24} sm={12} md={8} lg={6}>
 
+                          <div css={pokeCard}>
+                            <Image loader={pokeload} src={po?.image} alt={po?.name} width={200} height={200}/>
+                            <br></br>
+                            <h5>{po?.name}</h5>
+                            <br></br>
+                              <Row>
+                                <Col xs={24} sm={24} lg={24} md={24} >
+                                  <IconButton onClick={() => getIntoDetail(po)} icon={<Search/>} color="green" appearance="primary">Detail</IconButton>
+                                </Col>
+                              </Row>
+                          </div>
+                        </Col>
+                      )
+                    })
+                  }
+                </Row>
+                
+              </Grid>
+            </InfiniteScroller>
           
-            <Grid css={hadPadding}>
+            {/* <Grid id="pokecontain" css={hadPadding}>
               <Row>  
                 {
                   data?.pokemons?.results.length > 0 &&
@@ -159,7 +205,9 @@ const getIntoDetail = (pdata) => {
                 </Button>
               }
               
-            </Grid>
+            </Grid> */}
+
+
         
         </div>
 
