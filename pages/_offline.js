@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-export default offlinePage = () => (
+const offlinePage = () => (
     <div>
         <Head>
             <title>pokedex is offline</title>
@@ -10,4 +10,6 @@ export default offlinePage = () => (
         </h1>
 
     </div>
-)
+);
+
+export default offlinePage;
